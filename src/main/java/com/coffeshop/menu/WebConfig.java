@@ -13,26 +13,16 @@ import org.springframework.web.servlet.view.JstlView;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
-
     @Bean
     public ViewResolver viewResolver() {
         InternalResourceViewResolver resolver = new InternalResourceViewResolver();
         resolver.setViewClass(JstlView.class);
         resolver.setPrefix("/WEB-INF/jsp/");
         resolver.setSuffix(".jsp");
-        resolver.setOrder(1);  // Added to ensure this resolver is used first
-        resolver.setViewNames("*");  // Allow it to handle all view names
+        resolver.setOrder(2);  // Changed to lower priority
+        // Only look for views that end with "jsp"
+        resolver.setViewNames("*jsp");
         return resolver;
-    }
-
-    @Bean
-    public TomcatServletWebServerFactory tomcatFactory() {
-        return new TomcatServletWebServerFactory() {
-            @Override
-            protected void postProcessContext(Context context) {
-                ((StandardJarScanner) context.getJarScanner()).setScanManifest(false);
-            }
-        };
     }
 
     @Override

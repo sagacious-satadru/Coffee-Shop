@@ -4,9 +4,10 @@
     <head>
         <meta charset="UTF-8">
         <title>Coffee Shop Menu</title>
+        <link rel="stylesheet" href="/css/styles.css">
     </head>
     <body>
-        <h1>Welcome to the Coffee Shop!</h1>
+        <h1>Welcome to the Furina de Fontaine Coffee Shop!</h1>
         <h2>Our Menu</h2>
         <table border="1">
             <tr>
