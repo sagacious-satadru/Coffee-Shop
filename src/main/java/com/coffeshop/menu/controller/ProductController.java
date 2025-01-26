@@ -1,13 +1,12 @@
 package com.coffeshop.menu.controller;
 
 import com.coffeshop.menu.model.Product;
+import com.coffeshop.menu.service.ProductService;
 import jakarta.servlet.ServletContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -35,25 +34,31 @@ public class ProductController {
 //    {
 //        return "Welcome to the Coffee Shop! Greetings from Peter Griffin! He says hola!";
 //    }
+    @Autowired
+    private ProductService productService;
 
-    @RequestMapping("/") // this will be the default route for the ProductController class, i.e. http://localhost:8080/ -> our home route
-    public String listProducts(Model productListModel) {
-        try {
-            List<Product> products = productsList;
-            System.out.println("Products loaded: " + products.size());
-
-            // Debug lines
-            ServletContext servletContext = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest().getServletContext();
-            String realPath = servletContext.getRealPath("/WEB-INF/jsp/menu.jsp");
-            System.out.println("Attempting to find JSP at: " + realPath);
-
-            productListModel.addAttribute("products", products);
-            return "menu";
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
-        }
+    @GetMapping("/") // this will be the default route for the ProductController class, i.e. http://localhost:8080/ -> our home route
+    public String viewHomePage(Model model) {
+        List<Product> products = productService.getAllProducts();
+        model.addAttribute("products", products);
+        return "menu";
     }
+
+//    @RequestMapping("/") // this will be the default route for the ProductController class, i.e. http://localhost:8080/ -> our home route
+//    public String listProducts(Model productListModel) {
+//        try {
+//            List<Product> products = productsList;
+//            // Updated logging to reflect Thymeleaf template usage
+//            System.out.println("Products loaded: " + products.size());
+//            System.out.println("Rendering Thymeleaf template: menu.html");
+//
+//            productListModel.addAttribute("products", products);
+//            return "menu";
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            throw e;
+//        }
+//    }
     @RequestMapping("/add")
     public String showProductForm(Model productAddFormModel) {
         productAddFormModel.addAttribute("product", new Product());
@@ -62,13 +67,15 @@ public class ProductController {
 
     @PostMapping("/addNewProduct")
     public String addProduct(Product product) {
-        // Fix: Since productsList is immutable (created with List.of()),
-        // we need to make it mutable
-        if (productsList == null) {
-            productsList = new ArrayList<>();
-        }
-        productsList.add(product);
+        // Update to use service instead of list
+        productService.saveProduct(product); // We'll be implementing a saveProduct method in the ProductService interface and ProductServiceImpl class
         return "redirect:/";
+    }
+    @GetMapping("/showNewProductForm")
+    public String showNewProductForm(Model model) {
+        Product product = new Product();
+        model.addAttribute("product", product);
+        return "add-new-product";
     }
     @RequestMapping("/test")
     public String testJsp() {
