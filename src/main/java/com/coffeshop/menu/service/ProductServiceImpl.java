@@ -15,8 +15,22 @@ public class ProductServiceImpl implements ProductService {
         public List<Product> getAllProducts() {
             return productRepository.findAll();
         }
+
         @Override
         public void saveProduct(Product product) {
-            this.productRepository.save(product);
+               System.out.println("Saving product: " + product.getName() + " with price: " + product.getPrice());
+                validateProduct(product);
+                productRepository.save(product);
+                System.out.println("Product saved successfully with ID: " + product.getId());
+            }
+        private void validateProduct(Product product) {
+            if (product.getName() == null || product.getName().trim().length() < 2) {
+                throw new IllegalArgumentException("Product name must be at least 2 characters long");
+            }
+            if (product.getPrice() <= 0) {
+                throw new IllegalArgumentException("Price must be greater than 0");
+            }
         }
-}
+    }
+
+

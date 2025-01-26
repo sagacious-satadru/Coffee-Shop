@@ -11,14 +11,14 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
     @NotNull(message = "Product name is required")
     @Size(min = 1, max = 50, message="Product name must be between 1 and 50 characters")
     @Column(name = "PRODUCT_NAME", length = 50, nullable = false, unique = false)
     private String name;
     @NotNull(message = "Product price is required")
     @Min(value = 1, message = "Price must be greater than 0")
-    private double price;
+    private Double price;
 
     public Product(int id, String name, double price) {
         this.id = id;
